@@ -33,6 +33,41 @@ class _HomePageWebState extends State<HomePageWeb> {
 
   @override
   Widget build(BuildContext context) {
+    WebViewController controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageStarted: (String url) {
+            getCookies(url);
+          },
+          onPageFinished: (String url) {
+            getCookies(url);
+          },
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+
+            if (request.url.startsWith(url)) {
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..addJavaScriptChannel(
+        'Toaster',
+        onMessageReceived: (JavaScriptMessage message) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message.message)),
+          );
+        },
+      )
+      ..loadRequest(Uri.parse(url));
+    controller.canGoBack();
+
     /// Get cookies
     getCookies(url);
 
@@ -41,39 +76,10 @@ class _HomePageWebState extends State<HomePageWeb> {
 
             /// Webview widget
             WillPopScope(
-                onWillPop: () async => false,
-                child: WebViewWidget(
-                    controller: WebViewController()
-                      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                      ..setBackgroundColor(const Color(0x00000000))
-                      ..setNavigationDelegate(
-                        NavigationDelegate(
-                          onProgress: (int progress) {
-                            // Update loading bar.
-                          },
-                          onPageStarted: (String url) {
-                            getCookies(url);
-                          },
-                          onPageFinished: (String url) {
-                            getCookies(url);
-                          },
-                          onWebResourceError: (WebResourceError error) {},
-                          // onNavigationRequest: (NavigationRequest request) {
-                          //   if (request.url.startsWith(url)) {
-                          //     return NavigationDecision.prevent;
-                          //   }
-                          //   return NavigationDecision.navigate;
-                          // },
-                        ),
-                      )
-                      ..addJavaScriptChannel(
-                        'Toaster',
-                        onMessageReceived: (JavaScriptMessage message) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(message.message)),
-                          );
-                        },
-                      )
-                      ..loadRequest(Uri.parse(url)))));
+                onWillPop: () async {
+                  controller.goBack();
+                  return false;
+                },
+                child: WebViewWidget(controller: controller)));
   }
 }
