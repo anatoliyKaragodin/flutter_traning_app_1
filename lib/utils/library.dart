@@ -13,5 +13,5 @@ export 'package:flutter/services.dart';
 export 'package:advertising_id/advertising_id.dart';
 export 'package:flutter/services.dart';
 export 'package:flutter_native_timezone/flutter_native_timezone.dart';
-export 'package:webview_flutter/webview_flutter.dart';
 export 'package:shared_preferences/shared_preferences.dart';
+export 'package:flutter_inappwebview/flutter_inappwebview.dart';
