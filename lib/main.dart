@@ -8,6 +8,7 @@ import 'package:flutter_traning_app_1/riverpod/riverpod.dart';
 import 'package:flutter_traning_app_1/utils/library.dart';
 
 import 'package:flutter_traning_app_1/pages/exercise_page.dart';
+import 'package:flutter_user_agentx/flutter_user_agent.dart';
 import 'data/exercises.dart';
 
 final container = ProviderContainer();
@@ -15,11 +16,15 @@ String url = '';
 String? advertisingId = '';
 String timezone = 'Unknown';
 int homePageIndex = 2;
+String userAgent = 'unknown';
 
 void main() async {
   /// Check initialization
   WidgetsFlutterBinding.ensureInitialized();
-
+  await FlutterUserAgent.init();
+  var webViewUserAgent = FlutterUserAgent.webViewUserAgent;
+  userAgent = webViewUserAgent!;
+  print(userAgent);
   /// Load url
   url = await LocalData().getUrl();
   if(url != ''){homePageIndex = 1;}

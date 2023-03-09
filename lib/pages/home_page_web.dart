@@ -16,6 +16,7 @@ class _HomePageWebState extends State<HomePageWeb> {
     InAppWebViewController? webViewController;
     InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
         crossPlatform: InAppWebViewOptions(
+          userAgent: userAgent,
           useShouldOverrideUrlLoading: true,
           mediaPlaybackRequiresUserGesture: false,
         ),
